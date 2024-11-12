@@ -1,4 +1,50 @@
+body {
+  background-color: #010127;
+}
+
+
 h1 {
   text-align: center;
   font-family: 'Times New Roman', Times, serif;
+  color: blanchedalmond;
+}
+
+#gcLogo {
+width: 20vw;
+margin-left: 15vw;
+ 
+}
+
+#buttons {
+  width: 60vw;
+  margin-left:25vw;
+  padding: auto;
+  
+}
+
+.btn {
+  background-color: salmon;
+  color: white;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-shadow: 1px 1px 2px black;
+  border-radius: 5px;
+  padding: auto;
+  font-size: 2rem;
+display: inline-block;
+margin-right: 2rem;
+
+}
+
+.btn:hover,
+.btn:focus {
+  color:white;
+  background-color: palevioletred;
+  transform: scale(1.1);
+  box-shadow: 0 0 1em .5em white;
+}
+
+
+.board {
+  max-width: 100vw;
+  background-position: center;
 }
