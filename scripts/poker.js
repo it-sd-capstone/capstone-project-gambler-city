@@ -174,7 +174,7 @@ function displayHands(playerHands) {
       playerHands=[];
       communityCards=[];
       shuffleDeck(deck);
-      //dealHands(deck, playerHands);
+      dealHands(deck, playerHands);
       displayHands(playerHands);
       betButton.classList.remove("inactive");
       callButton.classList.remove("inactive");
