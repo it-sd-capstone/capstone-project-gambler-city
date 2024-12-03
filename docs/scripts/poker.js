@@ -84,8 +84,8 @@ function displayHands(playerHands) {
   
     // Adjust the path based on the actual file structure
     let cardImgSrc = isFaceDown
-    ? '/images/cards/cardbacks.png'
-    : `/images/cards/${suitMap[suitInitial]}/${cardValue}${suitInitial}.png`;
+    ? './images/cards/cardbacks.png'
+    : `./images/cards/${suitMap[suitInitial]}/${cardValue}${suitInitial}.png`;
   
     // Set the image source and alt text
     cardImg.src = cardImgSrc;
