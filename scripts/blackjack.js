@@ -76,10 +76,10 @@ function displayHands() {
       dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
     }
     // Also reveal all remaining dealer cards
-    dealerHand.slice(1).forEach(card => {
-      const cardElement = createCardElement(card, false);
-      dealerHandElement.appendChild(cardElement);
-    });
+    // dealerHand.slice(1).forEach(card => {
+    //   const cardElement = createCardElement(card, false);
+    //   dealerHandElement.appendChild(cardElement);
+    // });
   }
   // Update and display scores (only once here)
   playerScoreElement.textContent = calculateScore(playerHand);
