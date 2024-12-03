@@ -1,9 +1,13 @@
 import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
 
 // Initialize player money from localStorage or default to 100
-let playerMoney = localStorage.getItem('playerMoney') ? parseInt(localStorage.getItem('playerMoney')) : 100;
+let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
 
-// Update the player money display
+
+if (isNaN(playerMoney)) {
+  playerMoney = 100;
+  localStorage.setItem('playerMoney', playerMoney); // Store default value in localStorage
+}
 document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
 
 const suits = ["C", "D", "H", "S"];
@@ -12,9 +16,31 @@ let deck = [];
 let playerHand = [];
 let dealerHand = [];
 let gameOver = false;
+let currentBet = 0; 
 
 // Function to start a new game of Blackjack
 function startBlackjack() {
+  let betAmount;
+
+  do {
+    betAmount = prompt(`Place your bet please\n $5 Min\n You have $${playerMoney}.`);
+
+    // Validate bet
+    if (betAmount === null) { // User canceled the prompt
+      alert("Betting is required to start the game.");
+      continue;
+    } else if (isNaN(betAmount) || betAmount < 5 || betAmount > 100 || betAmount > playerMoney) {
+      alert(`Invalid bet. Please enter a number between $5 and $${Math.min(100, playerMoney)}.`);
+    }
+  } while (betAmount === null || isNaN(betAmount) || betAmount < 5 || betAmount > 100 || betAmount > playerMoney);
+
+  // Deduct the bet from the player's money
+  playerMoney -= parseInt(betAmount);
+  currentBet = betAmount; //Store bet for win/lose
+  localStorage.setItem('playerMoney', playerMoney); // Update the player's money in localStorage
+  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; // Update the displayed money
+
+  // Proceed with the rest of the game
   deck = createDeck(); // Use local function to create deck
   shuffleDeck(deck);   // Use deck.js function to shuffle
 
@@ -22,9 +48,8 @@ function startBlackjack() {
   playerHand = [drawCard(deck), drawCard(deck)];
   dealerHand = [drawCard(deck), drawCard(deck)];
 
-  displayHands();
+  displayHands(); // Display the hands after dealing
 }
-
 
 // Function to display the hands of the player and dealer
 function displayHands() {
@@ -44,46 +69,26 @@ function displayHands() {
     playerHandElement.appendChild(cardElement);
   });
 
-  console.log("Displaying dealer's hand:", dealerHand);
-
-  // Display dealer's hand (only show one card if the game is ongoing)
+  // Display dealer hand (only show one card if the game is ongoing)
+  //console.log("Displaying dealer's hand:", dealerHand);
   dealerHand.forEach((card, index) => {
     const isFaceDown = index === 0 && !gameOver;
     const cardElement = createCardElement(card, isFaceDown); 
     //cardElement.textContent = `${getCardValue(card)} of ${getCardSuit(card)}`; CARD AS TEXT
     dealerHandElement.appendChild(cardElement);
-    console.log(`Card: ${card}, FaceDown: ${isFaceDown}`);
+    //console.log(`Card: ${card}, FaceDown: ${isFaceDown}`);
   });
-
-
-  // If the game is over, reveal the dealer card
-  if (gameOver) {
-    const dealerFirstCardElement = dealerHandElement.querySelector('img'); // Select the first card (face-down initially)
-    if (dealerFirstCardElement) {
-      const dealerFirstCard = dealerHand[0]; // Get the first card in the dealer's hand
-      const dealerCardValue = getCardValue(dealerFirstCard);
-      const dealerCardSuit = getCardSuit(dealerFirstCard);
-
-      // Update the first card's image to the correct card
-      const suitMap = {
-        C: 'clubs',
-        D: 'diamonds',
-        H: 'hearts',
-        S: 'spades'
-      };
-      // Update the first card's image to the correct card
-      dealerFirstCardElement.src = `../images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
-      dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
-    }
-    // Also reveal all remaining dealer cards
-    // dealerHand.slice(1).forEach(card => {
-    //   const cardElement = createCardElement(card, false);
-    //   dealerHandElement.appendChild(cardElement);
-    // });
-  }
-  // Update and display scores (only once here)
-  playerScoreElement.textContent = calculateScore(playerHand);
-  dealerScoreElement.textContent = gameOver ? calculateScore(dealerHand) : '?';
+  // Update player score 
+  const playerScore = calculateScore(playerHand);
+  playerScoreElement.textContent = `Score: ${playerScore}`;
+  
+  // Dealer score
+  if (!gameOver) {
+    dealerScoreElement.textContent = "Score: ???";
+  } else {
+    const dealerScore = calculateScore(dealerHand);
+    dealerScoreElement.textContent = `Score: ${dealerScore}`;
+  }// console.log("Displaying dealer's hand:", dealerHand);
 }
 
 //function to show card image
@@ -107,7 +112,7 @@ function createCardElement(card, isFaceDown = false) {
   let cardImgSrc = isFaceDown
   ? '../images/cards/cardbacks.png'
   : `../images/cards/${suitMap[suitInitial]}/${cardValue}${suitInitial}.png`;
-  console.log("Image Path:", cardImgSrc);
+  //console.log("Image Path:", cardImgSrc);
 
   // Set the image source and alt text
   cardImg.src = cardImgSrc;
@@ -124,7 +129,7 @@ function calculateScore(hand) {
 
   hand.forEach(card => {
     const cardValue = card.slice(0, -1); // Get the numeric value
-    console.log(`Card: ${card}, Card Value: ${cardValue}`);
+    //console.log(`Card: ${card}, Card Value: ${cardValue}`);
 
     if (cardValue === "1") {
       aceCount++;
@@ -148,8 +153,7 @@ function hit() {
   if (gameOver) return;
   playerHand.push(drawCard(deck));  // Draw a card for the player
   displayHands();  // Display the updated hands
-
-  console.log(`Player Score after hit: ${calculateScore(playerHand)}`);
+  //console.log(`Player Score after hit: ${calculateScore(playerHand)}`);
   
   if (calculateScore(playerHand) > 21) {
     gameOver = true;  // End the game if player busts
@@ -161,42 +165,41 @@ function hit() {
 // Function to handle "Stand"
 function stand() {
   if (gameOver) return;
+    //console.log("Stand Function Reached..");
 
-  console.log("Standing...");
-
-  // Reveal the dealer's first card
-  const dealerHandElement = document.getElementById('dealer-cards');
-  const dealerFirstCardElement = dealerHandElement.querySelector('img'); // Get the dealer's first card element
-  
-  if (dealerFirstCardElement) {
-    // Reveal the first card of the dealer (this was previously hidden)
-    const dealerFirstCard = dealerHand[0];  // The dealer's first card
-    const dealerCardValue = getCardValue(dealerFirstCard);  // Get the card's value
-    const dealerCardSuit = getCardSuit(dealerFirstCard);  // Get the card's suit
+    // Reveal the dealer's first card
+    const dealerHandElement = document.getElementById('dealer-cards');
+    const dealerFirstCardElement = dealerHandElement.querySelector('img'); // Get the dealer's first card element
     
-    const suitMap = {
-      C: 'clubs',
-      D: 'diamonds',
-      H: 'hearts',
-      S: 'spades'
-    };
+    if (dealerFirstCardElement) {
+      dealerFirstCardElement.classList.add('flip'); // Add flip class to animate
+      setTimeout(() => {
+      const dealerFirstCard = dealerHand[0];  // Dealer's first card
+      const dealerCardValue = getCardValue(dealerFirstCard);
+      const dealerCardSuit = getCardSuit(dealerFirstCard);
+      
+      const suitMap = {
+        C: 'clubs',
+        D: 'diamonds',
+        H: 'hearts',
+        S: 'spades'
+      };
 
-    // Update the image source to show the correct card
-    dealerFirstCardElement.src = `../images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
-    dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
+      // Update the image source to show card
+      dealerFirstCardElement.src = `../images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
+      dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
+
+      let dealerScore = calculateScore(dealerHand);
+
+      // Dealer's logic: draw cards while score is below 17
+      while (dealerScore < 17) {
+        dealerHand.push(drawCard(deck));
+        dealerScore = calculateScore(dealerHand);
+      }   
+      determineWinner();  // Determine and show the result
+      displayHands();  // Re-display hands to show the dealer's final hand
+    }, 250);
   }
-
-  let dealerScore = calculateScore(dealerHand);
-
-  // Dealer's logic: draw cards while score is below 17
-  while (dealerScore < 17) {
-    dealerHand.push(drawCard(deck));
-    dealerScore = calculateScore(dealerHand);
-  }
-
-   
-  determineWinner();  // Determine and show the result
-  displayHands();  // Re-display hands to show the dealer's final hand
 }
 
 // Function to determine the winner
@@ -206,38 +209,58 @@ function determineWinner() {
   const dealerScore = calculateScore(dealerHand);
   const resultElement = document.getElementById('game-result');
   const dealerScoreElement = document.getElementById('dealer-score'); // Get dealer score element
-
-  console.log(`Player Score: ${playerScore}, Dealer Score: ${dealerScore}`);
+  //console.log(`Player Score: ${playerScore}, Dealer Score: ${dealerScore}`);
   
-  // Set the dealer's score in the DOM
-  dealerScoreElement.textContent = dealerScore;
+  // Set the dealer score in the DOM
+  dealerScoreElement.textContent = `Score: ${dealerScore}`;
 
   if (playerScore > 21) {
     resultElement.textContent = "You busted! Dealer wins!";
-    resultElement.style.color = "red";
-    playerMoney -= 10; // Deduct money if player busts
+    resultElement.style.color = "yellow"; // Player loses
+    //console.log(`Player Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (dealerScore > 21) {
-    resultElement.textContent = "Dealer busted! You win!";
-    resultElement.style.color = "red";
-     playerMoney += 10;//  Add money if dealer busts
+      resultElement.textContent = "Dealer busted! You win!";
+      resultElement.style.color = "yellow";
+      playerMoney += currentBet * 2; // Player wins
+      //console.log(`Dealer Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (playerScore > dealerScore) {
-    resultElement.textContent = "You win!";
-    resultElement.style.color = "red";
-     playerMoney += 10; // Add money if player wins here
+      resultElement.textContent = "You win!";
+      resultElement.style.color = "yellow";
+      playerMoney += currentBet * 2; // Player wins
+      //console.log(`Player Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (playerScore < dealerScore) {
-    resultElement.textContent = "Dealer wins!";
-    resultElement.style.color = "red";
-     playerMoney -= 10; // Deduct money if dealer wins here
+      resultElement.textContent = "Dealer wins!";
+      resultElement.style.color = "yellow"; // Player loses
+      //console.log(`Dealer Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else {
-    resultElement.textContent = "It's a tie!";
-    resultElement.style.color = "orange";
+      resultElement.textContent = "It's a tie!";
+      resultElement.style.color = "yellow";
+      playerMoney += currentBet; // Tie, return the player's bet
+      //console.log(`It's a Tie - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   }
   // Update localStorage with the new player money
   localStorage.setItem('playerMoney', playerMoney);
 
   // Display updated player money
   document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
+
   gameOver = true;
+  disableActions();
+    
+  setTimeout(() => {
+    const playAgain = confirm("Would you like to play another hand?");
+    if (playAgain) {
+      resetGame();
+    } else {
+      alert("Thank you for playing! Come back soon.");
+    }
+  }, 3000); //3 second delay for PlayAgain?
+}
+
+function disableActions() {
+  // Disable Hit and Stand buttons
+  document.getElementById('hit-button').disabled = true;
+  document.getElementById('stand-button').disabled = true;
 }
 
 // Function to reset the game
@@ -245,8 +268,16 @@ function resetGame() {
   gameOver = false;
   playerHand = [];
   dealerHand = [];
+  document.getElementById('hit-button').disabled = false;
+  document.getElementById('stand-button').disabled = false;
   document.getElementById('game-result').textContent = ""; // Clear the result
-  startBlackjack();
+
+  // Check if the player has enough money to place the minimum bet
+  if (playerMoney < 5) {
+    alert("You do not have enough money to place the minimum bet of $5. Play our Match Game to earn more money!");
+  } else {
+    startBlackjack(); // Start a new game if they have enough money
+  }
 }
 
-export { startBlackjack, hit, stand, resetGame };
+export { startBlackjack, drawCard, hit, stand, resetGame, calculateScore };

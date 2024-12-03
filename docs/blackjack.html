@@ -11,18 +11,19 @@
   <h1 class="glow">Blackjack</h1>
   <a class="back" href="index.html">Back</a>
   <div id="game-area">
+    <button id="start-game-button">Deal Hand</button>
     <div id="game-result" class="result"></div>
     <div id="hands-container">
       <div id="player-hand">
         <div id="player-money"></div>
         <h2>Your Hand (Score: <span id="player-score">0</span>)</h2>
         <div id="player-cards"></div>
-        <div class="button-container">
-          <button id="hit-button">Hit</button>
-          <button id="stand-button">Stand</button>
-          <button id="reset-button">Reset Game</button>
-        </div>
+      
+      <div class="button-container">
+        <button id="hit-button">Hit</button>
+        <button id="stand-button">Stand</button>
       </div>
+    </div>
       <div id="dealer-hand">
         <h2>Dealer's Hand (Score: <span id="dealer-score">0</span>)</h2>
         <div id="dealer-cards"></div>
@@ -32,15 +33,19 @@
   
   <script type="module">
     import { startBlackjack, hit, stand, resetGame } from '../scripts/blackjack.js';
+
+      // Event listener for Start Game button
+      document.getElementById("start-game-button").addEventListener("click", function() {
+      // Hide the start game button and show the game area
+      document.getElementById("start-game-button").style.display = "none";
+      document.getElementById("game-area").style.display = "block";
   
-    window.onload = function() {
       startBlackjack();
-    };
+      });
   
     // Event listeners for buttons
     document.getElementById("hit-button").addEventListener("click", hit);
     document.getElementById("stand-button").addEventListener("click", stand);
-    document.getElementById("reset-button").addEventListener("click", resetGame);
   </script>
 </body>
 </html>

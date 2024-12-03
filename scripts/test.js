@@ -1,20 +1,13 @@
-// Import from deck.js
-import { printDeck, printDeckValues, getCardValue, getCardSuit, shuffleDeck, dealDeck } from './deck.js';
-
-//Coin Testing
-let playerMoney = localStorage.getItem('playerMoney') ? parseInt(localStorage.getItem('playerMoney')) : 100;
-console.log(playerMoney)
-
-
-
+// Import .js
+import { printDeck, printDeckValues, getCardValue, getCardSuit, shuffleDeck, dealDeck, createDeck} from './deck.js';
+import { calculateScore, hit, resetGame, checkWinner } from './blackjackTest.js';
 
 
 let playerHands = [];
 let deck = ['1C', '2C', '3C', '4C', '5C', '6C', '7C', '8C', '9C', '10C', '11C', '12C', '13C',
         '1D', '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', '10D', '11D', '12D', '13D',
         '1H', '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', '10H', '11H', '12H', '13H',
-        '1S', '2S', '3S', '4S', '5S', '6S', '7S', '8S', '9S', '10S', '11S', '12S', '13S'
-]
+        '1S', '2S', '3S', '4S', '5S', '6S', '7S', '8S', '9S', '10S', '11S', '12S', '13S']
 printDeck(deck);
 printDeckValues(deck);
 console.log(getCardValue('3S'));
@@ -24,83 +17,90 @@ dealDeck(deck, playerHands, 3, 3);
 console.log(deck);
 console.log(playerHands);
 
+// blackjack.test.js
+import assert from 'assert';
 
-//Test for Blackjack
-// Import from `blackjack.js` with a different name for shuffleDeck to avoid conflict
-//import { createDeck, shuffleDeck as shuffleBlackjackDeck, calculateScore, drawCard } from './blackjack.js';
-const hand1 = ["A", "K"];
-const hand2 = ["A", "K", "5"];
-const hand3 = ["2", "3", "6"];
-const hand4 = ["A", "A", "K"];
-const hand5 = ["A", "A", "A"];
-const hand6 = ["J", "Q", "K"];
+// Test for calculateScore
+(function testCalculateScore() {
+        let hand = ['10C', '7D'];
+        try {
+                assert.strictEqual(calculateScore(hand), 17, 'Expected score to be 17');
+                console.log('testCalculateScore passed');
+        } catch (e) {
+                console.error('testCalculateScore failed: ' + e.message);
+        }
 
-// Test createDeck
-function testCreateDeck() {
-  const deck = createDeck();
-  console.log("Test createDeck: ", deck.length === 52 ? "PASS" : "FAIL");
-}
+        hand = ['1C', '7D'];
+        try {
+                assert.strictEqual(calculateScore(hand), 18, 'Expected score to be 18 (Ace as 11)');
+                console.log('testCalculateScore passed');
+        } catch (e) {
+                console.error('testCalculateScore failed: ' + e.message);
+        }
 
-// Test shuffleDeck
-function testShuffleDeck() {
-  const deck = createDeck();
-  const originalDeck = [...deck];
-  shuffleBlackjackDeck(deck);
+        hand = ['1C', '10D', '1H'];
+        try {
+                assert.strictEqual(calculateScore(hand), 12, 'Expected score to be 12 (Ace as 1)');
+                console.log('testCalculateScore passed');
+        } catch (e) {
+                console.error('testCalculateScore failed: ' + e.message);
+        }
+        })();
 
-  // Check if deck is shuffled
-  const isShuffled = deck.some((card, index) => card !== originalDeck[index]);
-  console.log("Test shuffleDeck: ", isShuffled ? "PASS" : "FAIL");
-}
+        // Test for hit
+        (function testHit() {
+        let playerHand = ['1C', '7D'];
+        const newCard = '5H';
+        try {
+                const updatedHand = hit(playerHand, newCard);
+                assert.strictEqual(updatedHand.length, 3, 'Expected hand length to be 3');
+                assert(updatedHand.includes(newCard), 'Expected hand to include the new card');
+                console.log('testHit passed');
+        } catch (e) {
+                console.error('testHit failed: ' + e.message);
+        }
+        })();
 
-function testCalculateScore() {
-        const hand1 = [{ value: "A" }, { value: "K" }];
-        console.log("Test calculateScore hand1: ", calculateScore(hand1) === 21 ? "PASS" : "FAIL");
-        
-        const hand2 = [{ value: "A" }, { value: "K" }, { value: "5" }];
-        console.log("Test calculateScore hand2: ", calculateScore(hand2) === 16 ? "PASS" : "FAIL");
-      
-        const hand3 = [{ value: "2" }, { value: "3" }, { value: "6" }];
-        console.log( "Test calculateScore hand3: ", calculateScore(hand3) === 11 ? "PASS" : "FAIL");
-      
-        const hand4 = [{ value: "A" }, { value: "A" }, { value: "K" }];
-        console.log("Test calculateScore hand4: ", calculateScore(hand4) === 12 ? "PASS" : "FAIL");
-      
-        const hand5 = [{ value: "A" }, { value: "A" }, { value: "A" }];
-        console.log("Test calculateScore hand5: ", calculateScore(hand5) === 13 ? "PASS" : "FAIL"); 
-        // Test with 3 Aces, expected to count as 1, 1, 11
+        // Test for resetGame
+        (function testResetGame() {
+        try {
+                const gameState = resetGame();
+                assert.deepStrictEqual(gameState.playerHand, [], 'Expected player hand to be empty');
+                assert.deepStrictEqual(gameState.dealerHand, [], 'Expected dealer hand to be empty');
+                assert.strictEqual(gameState.gameOver, false, 'Expected gameOver to be false');
+                assert.strictEqual(gameState.winner, null, 'Expected winner to be null');
+                console.log('testResetGame passed');
+        } catch (e) {
+                console.error('testResetGame failed: ' + e.message);
+        }
+        })();
 
-        const hand6 = [{ value: "J" }, { value: "Q" }, { value: "K" }];
-        console.log( "Test calculateScore hand6: ", calculateScore(hand6) === 30 ? "PASS" : "FAIL");
-        // Test with all face cards, should total 30
-      }
+        // Test for checkWinner
+        (function testCheckWinner() {
+        let playerHand = ['10C', '7D']; // 17
+        let dealerHand = ['9H', '7S']; // 16
+        try {
+                assert.strictEqual(checkWinner(playerHand, dealerHand), 'player', 'Expected player to win');
+                console.log('testCheckWinner (1) passed');
+        } catch (e) {
+                console.error('testCheckWinner (1) failed: ' + e.message);
+        }
 
-function testDrawCard() {
-  let deck = createDeck();
-  const cardBeforeDraw = deck.length;
-  
-  // Draw a card
-  const card = drawCard(deck);
-  const cardAfterDraw = deck.length;
+        playerHand = ['10C', '7D']; // 17
+        dealerHand = ['10H', '9S']; // 19
+        try {
+                assert.strictEqual(checkWinner(playerHand, dealerHand), 'dealer', 'Expected dealer to win');
+                console.log('testCheckWinner (2) passed');
+        } catch (e) {
+                console.error('testCheckWinner (2) failed: ' + e.message);
+        }
 
-  console.log("Deck before drawing a card:", cardBeforeDraw);
-  console.log("Deck after drawing a card:", cardAfterDraw);
-  console.log("Card drawn:", card);
-
-  // Deck length reduced by 1, and a card is drawn
-  if (cardAfterDraw === cardBeforeDraw - 1 && card) {
-    console.log("Test drawCard: PASS");
-  } else {
-    console.log("Test drawCard: FAIL");
-  }
-}
-
-// Run all tests
-function runTests() {
-  console.log("Running Tests for Blackjack...");
-  testCreateDeck();
-  testShuffleDeck();
-  testCalculateScore();
-  testDrawCard();
-}
-
-runTests();
+        playerHand = ['10C', '7D']; // 17
+        dealerHand = ['7H', '10S']; // 17
+        try {
+                assert.strictEqual(checkWinner(playerHand, dealerHand), 'draw', 'Expected a draw');
+                console.log('testCheckWinner (3) passed');
+        } catch (e) {
+                console.error('testCheckWinner (3) failed: ' + e.message);
+        }
+        })();

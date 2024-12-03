@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Rye" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+    <!--<link href="https://fonts.googleapis.com/css?family=Rye" rel="stylesheet">-->
+    <!--<link id="styleSheet" rel="stylesheet" href="./style.css">-->
     <title>Match</title>
 </head>
 <body>
+
   <h1 class="glow">Match</h1>
+  <section class="top">
+    <div class="playerCoins"><h2>Playercoins: <span class="TotalCoins">0</span></h2></div>
+    <div class="titleSection"><h1>Matching Money</h1></div>
+    <div class="score"><h2>Score: <span class="currentScore">0</span></h2></div>
+    <div class="coinsEarned"><h2>Coins earned: <span class="currentEarned">0</span></h2></div>
+</section>
   <a class="back" href="index.html">Back</a>
+  <section class="memory-game">   
+  </section>
+  <section class="buttons">
+    <button type="button" onclick="payOut()" class="btn">Payout</button>
+    <button type="button" onclick="restart()" class="btn">Restart</button>
+    <button type="button" class="btn">Exit</button>
+</section>
+
+  <script id="scriptJS" class="scriptClass" src="match.js"></script>
 </body>
 </html>

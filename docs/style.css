@@ -131,8 +131,26 @@ Green background box for the game area */
   border-radius: 10px;
   margin-bottom: 20px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
+}
+#dealer-hand {
+  flex: 1 1 10vw;
+  background-color: #003f00;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/*Keep cards in a row */
+#player-cards, #dealer-cards {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 h2 {
@@ -163,6 +181,16 @@ h2 {
   height: auto;
   max-width: 120px;
   min-width: 60px;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+.card-image.flip {
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  /* Make sure the back of the card is styled */
+  backface-visibility: hidden;
 }
 
 .inactive {
