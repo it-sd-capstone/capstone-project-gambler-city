@@ -1,4 +1,4 @@
-import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
+import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from 'deck.js';
 
 // Initialize player money from localStorage or default to 100
 let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
@@ -186,7 +186,7 @@ function stand() {
       };
 
       // Update the image source to show card
-      dealerFirstCardElement.src = `../images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
+      dealerFirstCardElement.src = `/images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
       dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
 
       let dealerScore = calculateScore(dealerHand);
