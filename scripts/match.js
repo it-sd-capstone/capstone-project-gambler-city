@@ -117,7 +117,7 @@ const cardSuit = getCardSuit(matchCard);
 
 
   
-  let cardElement = `../images/cards/${suitMap[cardSuit[0]]}/${cardValue}${cardSuit[0]}.png`;
+  let cardElement = `./images/cards/${suitMap[cardSuit[0]]}/${cardValue}${cardSuit[0]}.png`;
 
 
 
@@ -133,7 +133,7 @@ const cardSuit = getCardSuit(matchCard);
     
      const backFace = document.createElement('img');
      backFace.className = 'back-face';
-     backFace.src = `../images/cards/cardbacks.png`;
+     backFace.src = `./images/cards/cardbacks.png`;
      memoryCard.appendChild(backFace);
 
      // -----------------------------------css 

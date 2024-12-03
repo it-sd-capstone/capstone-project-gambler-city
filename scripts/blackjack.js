@@ -186,7 +186,7 @@ function stand() {
       };
 
       // Update the image source to show card
-      dealerFirstCardElement.src = `../images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
+      dealerFirstCardElement.src = `./images/cards/${suitMap[dealerCardSuit[0].toUpperCase()]}/${dealerCardValue}${dealerCardSuit[0].toUpperCase()}.png`;
       dealerFirstCardElement.alt = `${dealerCardValue} of ${dealerCardSuit}`;
 
       let dealerScore = calculateScore(dealerHand);
