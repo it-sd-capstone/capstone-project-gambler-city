@@ -1,4 +1,4 @@
-import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from 'deck.js';
+import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
 
 // Initialize player money from localStorage or default to 100
 let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
