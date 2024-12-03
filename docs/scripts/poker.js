@@ -1,4 +1,4 @@
-import {shuffleDeck, getCardValue, getCardSuit, dealDeck, drawCard} from './deck.js';
+import {shuffleDeck, getCardValue, getCardSuit, dealDeck, drawCard} from 'deck.js';
 
 //Initializing Variables
 let deck = ['1C', '2C', '3C', '4C', '5C', '6C', '7C', '8C', '9C', '10C', '11C', '12C', '13C', 
