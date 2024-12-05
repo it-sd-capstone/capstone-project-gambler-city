@@ -27,9 +27,6 @@ if (isNaN(playerMoney)) {
 let playerMoneyElement = document.getElementById('player-money');
 playerMoneyElement.textContent = `Money: $${playerMoney}`;
 
-
-
-
 //Adding Click Events
 document.getElementById('bet-button').addEventListener('click', bet);
 document.getElementById('call-button').addEventListener('click', call);
@@ -144,8 +141,6 @@ function createCardElement(card, isFaceDown = false) {
       totalBetAmount += parseInt(betAmount);
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
      }
-     
-
   }
 
   function call() {
@@ -272,7 +267,6 @@ function createCardElement(card, isFaceDown = false) {
   }
   
   function calculateScore() {
-    console.clear();
     let playerScore = 0;
     let dealerScore = 0;
     let playerHighCard = 0;
@@ -400,7 +394,6 @@ function createCardElement(card, isFaceDown = false) {
           suitCount++;
           if(suitCount > 3) {
             straightFlush = true;
-            console.log("Straight Flush!");
           }
         } else {
           suitCount = 0;
@@ -433,12 +426,10 @@ function createCardElement(card, isFaceDown = false) {
         if(playerHands[i][j+1] !== undefined) {
           if(getCardValue(playerHands[i][j]) == getCardValue(playerHands[i][j+1])) {
             duplicates += 1; 
-            console.log("Player has duplicates! " + duplicates);
           }
         } else if (playerHands[i][j-1] !== undefined) {
           if(getCardValue(playerHands[i][j]) == getCardValue(playerHands[i][j-1])) {
             duplicates += 1; 
-            console.log("Player has duplicates! " + duplicates);
           }
         }
 
@@ -491,7 +482,6 @@ function createCardElement(card, isFaceDown = false) {
               playerScore = 19;
             } else if (straight) {
               playerScore = 18;
-              console.log("Straight!");
             } else if (threeOfAKind) {
               playerScore = 17;
             } else if(twoPair) {
@@ -514,7 +504,6 @@ function createCardElement(card, isFaceDown = false) {
               dealerScore = 19;
             } else if (straight) {
               dealerScore = 18;
-              console.log("Straight!");
             } else if (threeOfAKind) {
               dealerScore = 17;
             } else if(twoPair) {
@@ -526,30 +515,17 @@ function createCardElement(card, isFaceDown = false) {
             }
           }
           
-          console.log(playerHighCard);
-          console.log(dealerHighCard);
-          // console.log(straightArray);
-          // console.log(straightFlushArray);
-          // console.log(onlyStraightCardsArray);
+
       } // End Player Card Loop
     } // End Player Hand Loop
     if(playerScore > dealerScore) {
       result.innerHTML = "Player Wins!";
-      console.log("Player Money: " + playerMoney);
-      console.log("Bet Amount: " + betAmount);
-      console.log("Total Bet Amount: " + totalBetAmount);
       playerMoney += totalBetAmount * 2;
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     } else if (dealerScore > playerScore) {
-      console.log("Player Money: " + playerMoney);
-      console.log("Bet Amount: " + betAmount);
-      console.log("Total Bet Amount: " + totalBetAmount);
       result.innerHTML = "Dealer Wins!";
     } else {
       result.innerHTML = 'It\'s a tie!';
-      console.log("Player Money: " + playerMoney);
-      console.log("Bet Amount: " + betAmount);
-      console.log("Total Bet Amount: " + totalBetAmount);
       playerMoney += totalBetAmount;
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     }
