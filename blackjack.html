@@ -8,7 +8,7 @@
     <title>Blackjack</title>
 </head>
 <body>
-  <h1 class="glow">Blackjack</h1>
+  <h1 class="title">Blackjack</h1>
   <a class="back" href="index.html">Back</a>
   <div id="game-area">
     <button id="start-game-button">Deal Hand</button>
@@ -18,7 +18,7 @@
         <div id="player-money"></div>
         <h2>Your Hand (Score: <span id="player-score">0</span>)</h2>
         <div id="player-cards"></div>
-      
+
       <div class="button-container">
         <button id="hit-button">Hit</button>
         <button id="stand-button">Stand</button>
@@ -27,10 +27,10 @@
       <div id="dealer-hand">
         <h2>Dealer's Hand (Score: <span id="dealer-score">0</span>)</h2>
         <div id="dealer-cards"></div>
-      </div>  
+      </div>
     </div>
   <div id="status"></div>
-  
+
   <script type="module">
     import { startBlackjack, hit, stand, resetGame } from '../scripts/blackjack.js';
 

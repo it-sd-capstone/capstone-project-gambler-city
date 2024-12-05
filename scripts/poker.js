@@ -14,6 +14,21 @@ let callButton = document.getElementById('call-button');
 let foldButton = document.getElementById('fold-button');
 let nextPhaseButton = document.getElementById('next-phase-button');
 let nextHandButton = document.getElementById('next-hand-button');
+let result = document.getElementById('game-result');
+let betAmount = 0; 
+let totalBetAmount = 0;
+let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
+if (isNaN(playerMoney)) {
+  playerMoney = 100;
+  localStorage.setItem('playerMoney', playerMoney); // Store default value in localStorage
+  nextPhaseButton.classList.remove('inactive');
+  nextPhaseButton.disabled = false;
+}
+let playerMoneyElement = document.getElementById('player-money');
+playerMoneyElement.textContent = `Money: $${playerMoney}`;
+
+
+
 
 //Adding Click Events
 document.getElementById('bet-button').addEventListener('click', bet);
@@ -24,6 +39,7 @@ document.getElementById('next-hand-button').addEventListener('click', nextHand);
 nextPhaseButton.classList.add('inactive');
 nextHandButton.classList.add('inactive');
 
+
 function dealHands(deck, playerHands) {
   shuffleDeck(deck);
   dealDeck(deck, playerHands, 2, 2);
@@ -33,11 +49,13 @@ function displayHands(playerHands) {
   const playerHandElement = document.getElementById('player-cards');
   const dealerHandElement = document.getElementById('dealer-cards');
   const pokerHandElement = document.getElementById('poker-cards');
+  nextPhaseButton.disabled = true;
   
   // Clear current displayed hands
   playerHandElement.innerHTML = '';
   dealerHandElement.innerHTML = '';
   pokerHandElement.innerHTML = '';
+  result.innerHTML = '';
   
   // Display player/dealer hands
     for(let i = 0; i < playerHands.length; i++) {
@@ -66,7 +84,7 @@ function displayHands(playerHands) {
   }
   
   //Function to show card image
-  function createCardElement(card, isFaceDown = false) {
+function createCardElement(card, isFaceDown = false) {
     const cardImg = document.createElement('img');
     const cardValue = getCardValue(card); // Retrieve card value (e.g., '1')
     const cardSuit = getCardSuit(card); // Retrieve full suit name (e.g., 'spades')
@@ -93,23 +111,53 @@ function displayHands(playerHands) {
     cardImg.className = 'card-image';
   
     return cardImg;
-  }
+}
 
   /* Poker specific methods, bet, call, fold, nextPhase, nextHand, calculateScore.
     All methods will set buttons to inactive at the correct phases of the game.
     nextPhase will check which phase it is and play amount of cards accordingly.
     nextHand will put the deck all 52 cards together and all hands are empty.
     calculate score will look for certain patterns to see who wins. */
-    
-
-  //WIP
+  
   function bet() {
-    nextPhaseButton.classList.remove('inactive');
+    betAmount = 0;
+    betAmount = prompt("How much would you like to bet?");
+    do {
+      if(betAmount === null) {
+        break;
+      } else if (isNaN(betAmount) || betAmount < 1 || betAmount > playerMoney || betAmount % 1 !== 0) {
+        alert(`Invalid bet. Please enter a number between $1 and $${playerMoney}, and not a decimal.`);
+        betAmount = prompt("How much would you like to bet?");
+      }
+    } while(isNaN(betAmount) || betAmount < 1 || betAmount > playerMoney || betAmount % 1 !== 0);
+
+     if(betAmount !== null) {
+      betButton.classList.add('inactive');
+      callButton.classList.add('inactive');
+      foldButton.classList.add('inactive');
+      betButton.disabled = true;
+      callButton.disabled = true;
+      foldButton.disabled = true;
+      nextPhaseButton.classList.remove('inactive');
+      nextPhaseButton.disabled = false;
+      playerMoney -= betAmount;
+      totalBetAmount += parseInt(betAmount);
+      playerMoneyElement.textContent = `Money: $${playerMoney}`;
+     }
+     
+
   }
 
-  //WIP
   function call() {
     nextPhaseButton.classList.remove('inactive');
+    nextPhaseButton.disabled = false;
+    betButton.classList.add('inactive');
+    callButton.classList.add('inactive');
+    foldButton.classList.add('inactive');
+    betButton.disabled = true;
+    callButton.disabled = true;
+    foldButton.disabled = true;
+
   }
 
   function fold() {
@@ -118,7 +166,11 @@ function displayHands(playerHands) {
     betButton.classList.add("inactive");
     callButton.classList.add("inactive");
     foldButton.classList.add("inactive");
+    betButton.disabled = true;
+    callButton.disabled = true;
+    foldButton.disabled = true;
     nextHandButton.classList.remove("inactive");
+    nextHandButton.disabled = false;
     calculateScore();
   }
   
@@ -129,6 +181,13 @@ function displayHands(playerHands) {
         communityCards.push(card);
         displayHands(playerHands);
         nextPhaseButton.classList.add('inactive');
+        nextPhaseButton.disabled = true;
+        betButton.classList.remove('inactive');
+        callButton.classList.remove('inactive');
+        foldButton.classList.remove('inactive');
+        betButton.disabled = false;
+        callButton.disabled = false;
+        foldButton.disabled = false;
       }
       phaseNum++;
     } else if(!gameOver && phaseNum == 2) {
@@ -137,15 +196,37 @@ function displayHands(playerHands) {
         displayHands(playerHands);
         phaseNum++;
         nextPhaseButton.classList.add('inactive');
+        nextPhaseButton.disabled = true;
+        betButton.classList.remove('inactive');
+        callButton.classList.remove('inactive');
+        foldButton.classList.remove('inactive');
+        betButton.disabled = false;
+        callButton.disabled = false;
+        foldButton.disabled = false;
     } else if(!gameOver && phaseNum == 3) {
       let card = drawCard(deck);
         communityCards.push(card);
+        displayHands(playerHands);
+        phaseNum++;
+        nextPhaseButton.classList.add('inactive');
+        nextPhaseButton.disabled = true;
+        betButton.classList.remove('inactive');
+        callButton.classList.remove('inactive');
+        foldButton.classList.remove('inactive');
+        betButton.disabled = false;
+        callButton.disabled = false;
+        foldButton.disabled = false;
+    } else if(!gameOver && phaseNum == 4) {
         displayHands(playerHands);
         phaseNum++;
         betButton.classList.add("inactive");
         callButton.classList.add("inactive");
         foldButton.classList.add("inactive");
         nextPhaseButton.classList.add('inactive');
+        betButton.disabled = true;
+        callButton.disabled = true;
+        foldButton.disabled = true;
+        nextPhaseButton.disabled = true;
         nextHandButton.classList.remove('inactive');
         gameOver = true;
         displayHands(playerHands);
@@ -171,23 +252,31 @@ function displayHands(playerHands) {
       }
       gameOver = false;
       phaseNum = 1;
-      playerHands=[];
-      communityCards=[];
+      playerHands = [];
+      communityCards = [];
       shuffleDeck(deck);
       dealHands(deck, playerHands);
       displayHands(playerHands);
       betButton.classList.remove("inactive");
       callButton.classList.remove("inactive");
       foldButton.classList.remove("inactive");
+      betButton.disabled = false;
+      callButton.disabled = false;
+      foldButton.disabled = false;
       nextPhaseButton.classList.add("inactive");
       nextHandButton.classList.add("inactive");
+      nextPhaseButton.disabled = true;
+      nextHandButton.disabled = true;
+      
     }
   }
   
-  //WIP
   function calculateScore() {
     console.clear();
-    let highestScore = 0;
+    let playerScore = 0;
+    let dealerScore = 0;
+    let playerHighCard = 0;
+    let dealerHighCard = 0;
 
     for(let i = 0; i < 2; i++) {
       //These reset the highscore after switching to another hand
@@ -199,18 +288,52 @@ function displayHands(playerHands) {
       let straight = false;
       let flush = false;
       let straightFlush = false;
+      let royalFlush = false;
 
       //Adds cards to array, orders them low to high, then check if previous number is 1 lower than current
       let straightArray = [];
       let playerCommunityArray = [];
+      let onlyStraightCardsArray = [];
+      let royalFlushArray = [];
       let straightCardCount = 1;
       straightArray.push(getCardValue(playerHands[i][0]));
       straightArray.push(getCardValue(playerHands[i][1]));
       playerCommunityArray.push(playerHands[i][0]);
       playerCommunityArray.push(playerHands[i][1]);
       for(let j = 0; j < 5; j++) {
-        straightArray.push(getCardValue(communityCards[j]));
-        playerCommunityArray.push(communityCards[j]);
+        if(communityCards[j] !== undefined) {
+          straightArray.push(getCardValue(communityCards[j]));
+          playerCommunityArray.push(communityCards[j]);
+        }
+      }
+
+      for(let j = 0; j < playerCommunityArray.length; j++) {
+        if(getCardValue(playerCommunityArray[j]) > 9) {
+          royalFlushArray.push(playerCommunityArray[j]);  
+        } else if (getCardValue(playerCommunityArray[j]) == 1) {
+          royalFlushArray.push(14 + getCardSuit(playerCommunityArray[j]));
+        }
+      }
+
+      let royalClubsCount = 0;
+      let royalDiamondsCount = 0;
+      let royalHeartsCount = 0;
+      let royalSpadesCount = 0;
+
+      for(let j = 0; j < royalFlushArray.length; j++) {
+        if (getCardSuit(royalFlushArray[j]) == 'C') {
+          royalClubsCount++;
+        } else if (getCardSuit(royalFlushArray[j]) == 'D') {
+          royalDiamondsCount++;
+        } else if (getCardSuit(royalFlushArray[j]) == 'H') {
+          royalHeartsCount++;
+        } else if (getCardSuit(royalFlushArray[j]) == 'S') {
+          royalSpadesCount++;
+        }
+
+        if(royalClubsCount > 4 || royalDiamondsCount > 4 || royalHeartsCount > 4 || royalSpadesCount > 4) {
+          royalFlush = true;
+        }
       }
       //If there is an ace, push a 14 value because ace can be used as a high in straights
       if(straightArray.includes(1)) {
@@ -241,13 +364,14 @@ function displayHands(playerHands) {
       });
       for(let j = 0; j < straightArray.length; j++) {
         if(straightArray[j - 1] !== -1 && straightArray[j] == straightArray[j - 1] + 1) {
+          onlyStraightCardsArray.push(straightArray[j-1]);
           straightCardCount++;
           if(straightCardCount > 4) {
-            console.log("Straight!");
             straight = true;
           } 
         } else {
           straightCardCount = 1;
+          onlyStraightCardsArray = [];
         }
       }
 
@@ -267,10 +391,12 @@ function displayHands(playerHands) {
       flushArray.push(getCardSuit(playerHands[i][0]));
       flushArray.push(getCardSuit(playerHands[i][1]));
       for(let j = 0; j < 5; j++) {
-        flushArray.push(getCardSuit(communityCards[j]));
+        if(communityCards[j] !== undefined) {
+          flushArray.push(getCardSuit(communityCards[j]));
+        }
       }
       for(let j = 0; j < flushArray.length; j++) {
-        if(straightFlushArray[j] === (straightFlushArray[j - 1])) {
+        if(straight == true && straightFlushArray[j] === (straightFlushArray[j - 1])) {
           suitCount++;
           if(suitCount > 3) {
             straightFlush = true;
@@ -290,18 +416,8 @@ function displayHands(playerHands) {
         }
       }
 
-      if(clubsCount > 4) {
+      if(clubsCount > 4 || diamondsCount > 4 || heartsCount > 4 || spadesCount > 4) {
         flush = true;
-        console.log("Clubs Flush!");
-      } else if (diamondsCount > 4) {
-        flush = true;
-        console.log("Diamond Flush!")
-      } else if (diamondsCount > 4) {
-        flush = true;
-        console.log("Diamond Flush!")
-      } else if (diamondsCount > 4) {
-        flush = true;
-        console.log("Diamond Flush!")
       }
 
 
@@ -312,11 +428,6 @@ function displayHands(playerHands) {
         if(getCardValue(playerHands[i][j]) == 1) {
           playerHands[i][j] = 14 + getCardSuit(playerHands[i][j]);
         }
-
-        //Highest Card Value is High Score
-        if(getCardValue(playerHands[i][j]) > highestScore) {
-          highestScore = getCardValue(playerHands[i][j]);
-        } 
 
         //Checks for pairs in player hand
         if(playerHands[i][j+1] !== undefined) {
@@ -344,49 +455,106 @@ function displayHands(playerHands) {
             if(getCardValue(playerHands[i][j]) == getCardValue(communityCards[k])) {
               duplicates += 1;
               pairCount += 1;
-              console.log(duplicates + " Community Duplicates");
             }
 
             //Checks duplicates and pairs to set hand rank to true
             if(duplicates == 3) {
               fourOfAKind = true;
-              console.log("Four of a kind! " + pairCount);
             } else if (duplicates == 2 && pairCount == 2) {
               fullHouse = true;
-              console.log("Full House! " + pairCount);
-            }
-              else if(duplicates == 2) {
+            } else if(duplicates == 2) {
               threeOfAKind = true;
-              console.log("Three of a kind! " + pairCount);
             } else if (pairCount == 2) {
               twoPair = true;
-              console.log("Two Pair! " + pairCount);
             }
             
             }
           } // End Community Card Loop
-          if(straightFlush) {
-            highestScore = 22;
-          } else if (fourOfAKind) {
-            highestScore = 21;
-          } else if (fullHouse) {
-            highestScore = 20;
-          } else if (flush) {
-            highestScore = 19;
-          } else if (straight) {
-            highestScore = 18;
-          } else if (threeOfAKind) {
-            highestScore = 17;
-          } else if(twoPair) {
-            highestScore = 16;
-          } else if(duplicates == 1) {
-            highestScore = 15;
-          } 
-        
-        console.log(playerHands[i][j]);
-        console.log(highestScore);
+
+          //Calculate score for player and dealer
+          if(getCardValue(playerHands[0][j]) > playerHighCard) {
+            playerHighCard = getCardValue(playerHands[0][j]);
+          }
+          if(getCardValue(playerHands[1][j]) > dealerHighCard) {
+            dealerHighCard = getCardValue(playerHands[1][j]);
+          }
+          if(i == 0) {
+            if(royalFlush) {
+              playerScore = 23;
+            } else if(straightFlush) {
+              playerScore = 22;
+            } else if (fourOfAKind) {
+              playerScore = 21;
+            } else if (fullHouse) {
+              playerScore = 20;
+            } else if (flush) {
+              playerScore = 19;
+            } else if (straight) {
+              playerScore = 18;
+              console.log("Straight!");
+            } else if (threeOfAKind) {
+              playerScore = 17;
+            } else if(twoPair) {
+              playerScore = 16;
+            } else if(duplicates == 1) {
+              playerScore = 15;
+            } else {
+              playerScore = playerHighCard;
+            }
+          } else {
+            if(royalFlush) {
+              dealerScore = 23;
+            } else if(straightFlush) {
+              dealerScore = 22;
+            } else if (fourOfAKind) {
+              dealerScore = 21;
+            } else if (fullHouse) {
+              dealerScore = 20;
+            } else if (flush) {
+              dealerScore = 19;
+            } else if (straight) {
+              dealerScore = 18;
+              console.log("Straight!");
+            } else if (threeOfAKind) {
+              dealerScore = 17;
+            } else if(twoPair) {
+              dealerScore = 16;
+            } else if(duplicates == 1) {
+              dealerScore = 15;
+            } else {
+              dealerScore = dealerHighCard;
+            }
+          }
+          
+          console.log(playerHighCard);
+          console.log(dealerHighCard);
+          // console.log(straightArray);
+          // console.log(straightFlushArray);
+          // console.log(onlyStraightCardsArray);
       } // End Player Card Loop
     } // End Player Hand Loop
+    if(playerScore > dealerScore) {
+      result.innerHTML = "Player Wins!";
+      console.log("Player Money: " + playerMoney);
+      console.log("Bet Amount: " + betAmount);
+      console.log("Total Bet Amount: " + totalBetAmount);
+      playerMoney += totalBetAmount * 2;
+      playerMoneyElement.textContent = `Money: $${playerMoney}`;
+    } else if (dealerScore > playerScore) {
+      console.log("Player Money: " + playerMoney);
+      console.log("Bet Amount: " + betAmount);
+      console.log("Total Bet Amount: " + totalBetAmount);
+      result.innerHTML = "Dealer Wins!";
+    } else {
+      result.innerHTML = 'It\'s a tie!';
+      console.log("Player Money: " + playerMoney);
+      console.log("Bet Amount: " + betAmount);
+      console.log("Total Bet Amount: " + totalBetAmount);
+      playerMoney += totalBetAmount;
+      playerMoneyElement.textContent = `Money: $${playerMoney}`;
+    }
   }
+
   dealHands(deck, playerHands);
   displayHands(playerHands);
+  

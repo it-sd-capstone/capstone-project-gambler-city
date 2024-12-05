@@ -15,6 +15,17 @@ body {
 a {
   text-decoration: none;
   color: white;
+  margin-bottom: 50px;
+  border-style: double;
+  border: 15px solid lime;
+  border-radius: 15px;
+  padding: 20px;
+  background-color: black;
+  display: inline-block;
+}
+
+a:hover {
+  background-color: #003f00;
 }
 
 h1 {
@@ -27,16 +38,6 @@ ul {
   list-style-position: inside;
   display: flex; 
   flex-direction: column; 
-}
-
-ul li {
-  margin-bottom: 50px;
-  border-style: double;
-  border: 15px solid lime;
-  border-radius: 15px;
-  padding: 20px;
-  background-color: #003f00;
-  display: inline-block;
 }
 
 .nav {
@@ -70,23 +71,17 @@ ul li {
   display: inline-block;
 }
 
-.glow {
+.title {
   font-size: 80px;
   color: #fff;
   text-align: center;
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
+  border-style: double;
+  border: 15px solid lime;
+  border-radius: 15px;
+  padding: 20px;
+  background-color: rgb(71, 35, 0);
+  display: inline-block;
 }
-
-/* @-webkit-keyframes glow {
-  from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e66800, 0 0 40px #e66800, 0 0 50px #e66800, 0 0 60px #e66800, 0 0 70px #e66800;
-  }
-  to {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e66800, 0 0 40px #e66800, 0 0 50px #e66800, 0 0 60px #e66800, 0 0 70px #e66800;
-  }
-} */
 
 /* Blackjack Styles
 Green background box for the game area */
