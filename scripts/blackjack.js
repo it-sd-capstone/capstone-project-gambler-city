@@ -110,8 +110,8 @@ function createCardElement(card, isFaceDown = false) {
 
   // Adjust the path based on the actual file structure
   let cardImgSrc = isFaceDown
-  ? '../images/cards/cardbacks.png'
-  : `../images/cards/${suitMap[suitInitial]}/${cardValue}${suitInitial}.png`;
+  ? './images/cards/cardbacks.png'
+  : `./images/cards/${suitMap[suitInitial]}/${cardValue}${suitInitial}.png`;
   //console.log("Image Path:", cardImgSrc);
 
   // Set the image source and alt text
