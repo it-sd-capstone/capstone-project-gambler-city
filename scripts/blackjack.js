@@ -1,13 +1,18 @@
 import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
 
-// Initialize player money from localStorage or default to 100
-let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
-
-
-if (isNaN(playerMoney)) {
-  playerMoney = 100;
-  localStorage.setItem('playerMoney', playerMoney); // Store default value in localStorage
+// Functions for managing player money
+function setPlayerMoney(bank) {
+  playerMoney = bank; // Update local variable
+  localStorage.setItem('playerMoney', playerMoney); // Store in localStorage
+  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; // Update UI
 }
+
+function getPlayerMoney() {
+  return parseInt(localStorage.getItem('playerMoney'), 10) || 100; // Default to 100 if not found
+}
+
+// Initialize player money
+let playerMoney = getPlayerMoney();
 document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
 
 const suits = ["C", "D", "H", "S"];
@@ -22,6 +27,9 @@ let currentBet = 0;
 function startBlackjack() {
   let betAmount;
 
+  // Retrieve the current money
+  playerMoney = getPlayerMoney();
+
   do {
     betAmount = prompt(`Place your bet please\n $5 Min\n You have $${playerMoney}.`);
 
@@ -35,14 +43,13 @@ function startBlackjack() {
   } while (betAmount === null || isNaN(betAmount) || betAmount < 5 || betAmount > 100 || betAmount > playerMoney);
 
   // Deduct the bet from the player's money
-  playerMoney -= parseInt(betAmount);
-  currentBet = betAmount; //Store bet for win/lose
-  localStorage.setItem('playerMoney', playerMoney); // Update the player's money in localStorage
-  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; // Update the displayed money
+  setPlayerMoney(playerMoney - parseInt(betAmount, 10));
+  currentBet = parseInt(betAmount, 10);
 
-  // Proceed with the rest of the game
-  deck = createDeck(); // Use local function to create deck
-  shuffleDeck(deck);   // Use deck.js function to shuffle
+
+  // Proceed with game
+  deck = createDeck(); 
+  shuffleDeck(deck);
 
   // Deal initial cards
   playerHand = [drawCard(deck), drawCard(deck)];
@@ -235,7 +242,7 @@ function determineWinner() {
   } else {
       resultElement.textContent = "It's a tie!";
       resultElement.style.color = "yellow";
-      playerMoney += currentBet; // Tie, return the player's bet
+      playerMoney += currentBet * 1; // Tie, return the player's bet
       //console.log(`It's a Tie - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   }
   // Update localStorage with the new player money
@@ -270,7 +277,9 @@ function resetGame() {
   dealerHand = [];
   document.getElementById('hit-button').disabled = false;
   document.getElementById('stand-button').disabled = false;
-  document.getElementById('game-result').textContent = ""; // Clear the result
+  document.getElementById('game-result').textContent = ""; // Clear result
+  playerMoney = getPlayerMoney(); // Get the money from localStorage
+  setPlayerMoney(playerMoney);
 
   // Check if the player has enough money to place the minimum bet
   if (playerMoney < 5) {

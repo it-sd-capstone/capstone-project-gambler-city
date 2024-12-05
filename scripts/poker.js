@@ -17,13 +17,11 @@ let nextHandButton = document.getElementById('next-hand-button');
 let result = document.getElementById('game-result');
 let betAmount = 0; 
 let totalBetAmount = 0;
-let playerMoney = parseInt(localStorage.getItem('playerMoney'), 100);
-if (isNaN(playerMoney)) {
-  playerMoney = 100;
-  localStorage.setItem('playerMoney', playerMoney); // Store default value in localStorage
-  nextPhaseButton.classList.remove('inactive');
-  nextPhaseButton.disabled = false;
-}
+
+// Retrieve player money from localStorage or initialize to 100
+let playerMoney = parseInt(localStorage.getItem('playerMoney'), 10) || 100;
+localStorage.setItem('playerMoney', playerMoney); // Ensure it's set in case the value was null
+
 let playerMoneyElement = document.getElementById('player-money');
 playerMoneyElement.textContent = `Money: $${playerMoney}`;
 
@@ -140,6 +138,7 @@ function createCardElement(card, isFaceDown = false) {
       playerMoney -= betAmount;
       totalBetAmount += parseInt(betAmount);
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
+      localStorage.setItem('playerMoney', playerMoney); // Store the updated value
      }
   }
 
@@ -271,6 +270,9 @@ function createCardElement(card, isFaceDown = false) {
     let dealerScore = 0;
     let playerHighCard = 0;
     let dealerHighCard = 0;
+
+    // Retrieve the player's current money from localStorage
+    let playerMoney = getPlayerMoney();
 
     for(let i = 0; i < 2; i++) {
       //These reset the highscore after switching to another hand
@@ -521,12 +523,14 @@ function createCardElement(card, isFaceDown = false) {
     if(playerScore > dealerScore) {
       result.innerHTML = "Player Wins!";
       playerMoney += totalBetAmount * 2;
+      setPlayerMoney(playerMoney); // Save updated money to localStorage
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     } else if (dealerScore > playerScore) {
       result.innerHTML = "Dealer Wins!";
     } else {
       result.innerHTML = 'It\'s a tie!';
       playerMoney += totalBetAmount;
+      setPlayerMoney(playerMoney); // Save updated money to localStorage
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     }
   }
