@@ -235,7 +235,7 @@ function determineWinner() {
   } else {
       resultElement.textContent = "It's a tie!";
       resultElement.style.color = "yellow";
-      playerMoney += currentBet; // Tie, return the player's bet
+      playerMoney += currentBet * 1; // Tie, return the player's bet
       //console.log(`It's a Tie - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   }
   // Update localStorage with the new player money
