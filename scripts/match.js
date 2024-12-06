@@ -63,47 +63,10 @@ function getRandomElements(arr, numElements) {
 // -----------------------------------document -- logic
 
 const docBody = document.querySelector('body');
-/*
-const glowClass = document.querySelector('.glow');
-const backClass = document.querySelector('.back');
-const scriptClass = document.querySelector('.scriptClass');
 
-const topSection = document.createElement('section');
-topSection.className = "top";
-docBody.appendChild(topSection);
-
-scriptClass.insertAdjacentElement('beforebegin', topSection);
-*/
 
 const gameSection = document.querySelector('.memory-game');
 
-/*
-gameSection.className ='memory-game';
-docBody.appendChild(gameSection);
-
-scriptClass.insertAdjacentElement('beforebegin', gameSection)
-
-const playerCoinsDiv = document.createElement('div');
-playerCoinsDiv.className = "playerCoins";
-topSection.appendChild(playerCoinsDiv);
-const totalCoinsSpan = document.createElement('span');
-totalCoinsSpan.className = "totalCoins";
-playerCoinsDiv.appendChild(totalCoinsSpan);
-
-const scoreDiv = document.createElement('div');
-scoreDiv.className = "score";
-topSection.appendChild(scoreDiv);
-const currentScoreSpan = document.createElement('span');
-currentScoreSpan.className = "currentScore";
-scoreDiv.appendChild(currentScoreSpan);
-
-const coinsEarnedDiv = document.createElement('div');
-coinsEarnedDiv.className = "coinsEarned";
-topSection.appendChild(coinsEarnedDiv);
-const currentEarnedSpan = document.createElement('span');
-currentEarnedSpan.className = "currentEarned";
-coinsEarnedDiv.appendChild(currentEarnedSpan);
-*/
 
 
 // -----------------------------------card graphic logic
@@ -154,17 +117,23 @@ const cardSuit = getCardSuit(matchCard);
         background-color: rgb(22, 59, 22) !important;
     }
 
+    .top {
+      background-color: rgba(22, 59, 22)!important;
+      width: 100vw;
+      text-align:center;      
+    }
 
 
     .memory-game {
+
         width: 70vw;
-        height: 70vw;
+        height: 70vh;
         margin: auto;
         display: flex;
         flex-wrap: wrap;
         perspective: 1000px;
-       
-
+        background-color: rgba(22, 59, 22); 
+        
     }
 
 
@@ -198,6 +167,19 @@ const cardSuit = getCardSuit(matchCard);
     
     .front-face {
         transform:rotateY(180deg);
+    }
+
+      .btn {
+        padding: 3rem 4rem;
+        font-size: 2rem;
+        background-color: #326341;
+        color: white;
+        border-style: double;
+        border-radius: 5px;
+        border: 2px solid white;
+        cursor: pointer;
+        width: auto;
+        position: relative;
     }
     `;
 
