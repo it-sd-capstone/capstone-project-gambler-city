@@ -272,7 +272,7 @@ function createCardElement(card, isFaceDown = false) {
     let dealerHighCard = 0;
 
     // Retrieve the player's current money from localStorage
-    let playerMoney = getPlayerMoney();
+    let playerMoney = parseInt(localStorage.getItem('playerMoney'), 10) || 100;
 
     for(let i = 0; i < 2; i++) {
       //These reset the highscore after switching to another hand
@@ -523,14 +523,14 @@ function createCardElement(card, isFaceDown = false) {
     if(playerScore > dealerScore) {
       result.innerHTML = "Player Wins!";
       playerMoney += totalBetAmount * 2;
-      setPlayerMoney(playerMoney); // Save updated money to localStorage
+      localStorage.setItem('playerMoney', playerMoney);
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     } else if (dealerScore > playerScore) {
       result.innerHTML = "Dealer Wins!";
     } else {
       result.innerHTML = 'It\'s a tie!';
       playerMoney += totalBetAmount;
-      setPlayerMoney(playerMoney); // Save updated money to localStorage
+      localStorage.setItem('playerMoney', playerMoney);
       playerMoneyElement.textContent = `Money: $${playerMoney}`;
     }
   }
