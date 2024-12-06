@@ -1,4 +1,5 @@
 import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
+import { getPlayerMoney, setPlayerMoney } from './playerMoney.js';
 
 // Functions for managing player money
 function setPlayerMoney(bank) {
