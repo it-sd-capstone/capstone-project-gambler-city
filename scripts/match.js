@@ -278,13 +278,39 @@ function increaseScore() {
  document.querySelector(".currentScore").textContent = score;
 }
 
-function payOut() {
-    coinsEarned += score;
-    document.querySelector(".currentEarned").textContent = coinsEarned;
-    score = 0;
-    document.querySelector(".currentScore").textContent = score;
+// function payOut() {
+//     coinsEarned += score;
+//     document.querySelector(".currentEarned").textContent = coinsEarned;
+//     score = 0;
+//     document.querySelector(".currentScore").textContent = score;
 
-} 
+// } 
+function payOut() {
+  // Get the current player money from local storage or set to 0
+  let playerMoney = localStorage.getItem('playerMoney') || 0;
+
+  // Debugging log: Check the value of playerMoney from localStorage
+  console.log('Player Money (before parsing):', playerMoney);
+
+  // Ensure playerMoney is a number (parse it correctly)
+  playerMoney = parseInt(playerMoney, 10); // Explicitly parse as integer
+
+  // Debugging log: Check parsed playerMoney
+  console.log('Parsed Player Money:', playerMoney);
+
+  // Add score to the player money
+  playerMoney += score;
+
+  // Save the updated player money back to local storage
+  localStorage.setItem('playerMoney', playerMoney);
+
+  // Update the UI to show the new player money
+  document.querySelector(".currentEarned").textContent = playerMoney;
+
+  // Reset the score
+  score = 0;
+  document.querySelector(".currentScore").textContent = score;
+}
 
 function restart(){
     score = 0;
