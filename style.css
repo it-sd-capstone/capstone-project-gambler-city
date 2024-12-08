@@ -1,5 +1,5 @@
 body {
-  background-image: url(./mainMenuBackground.png);
+
   background-repeat: no-repeat;
   background-color: #010127;
   background-position: center;
@@ -192,6 +192,7 @@ h2 {
   background-color: black;
 }
 
+
 @media (max-width: 1200px) {
   .card-image {
     width: 15vw;  /* Adjust the card size for medium screens */
@@ -209,6 +210,7 @@ h2 {
     width: 25vw;  /* Further adjust for very small screens */
   }
 }
+
 
 .button-container {
   display: flex;

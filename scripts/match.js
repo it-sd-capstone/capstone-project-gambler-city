@@ -123,16 +123,24 @@ const cardSuit = getCardSuit(matchCard);
       text-align:center;      
     }
 
+    .wrapper{
+      margin: auto
+      background-color: rgb(22, 59, 22) !important;
+      width: 100vw;
+      height: 100vh;
+    
+    }
 
     .memory-game {
-
         width: 70vw;
-        height: 70vh;
+        height: 70vw;
+        max-width: 640px;
+        max-height: 640px;
         margin: auto;
         display: flex;
         flex-wrap: wrap;
         perspective: 1000px;
-        background-color: rgba(22, 59, 22); 
+        background-color: rgba(22, 59, 22)!important; 
         
     }
 
