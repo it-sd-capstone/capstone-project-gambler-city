@@ -1,20 +1,8 @@
 import { shuffleDeck, getCardValue, getCardSuit, createDeck, drawCard } from './deck.js';
 import { getPlayerMoney, setPlayerMoney } from './playerMoney.js';
 
-// Functions for managing player money
-function setPlayerMoney(bank) {
-  playerMoney = bank; // Update local variable
-  localStorage.setItem('playerMoney', playerMoney); // Store in localStorage
-  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; // Update UI
-}
-
-function getPlayerMoney() {
-  return parseInt(localStorage.getItem('playerMoney'), 10) || 100; // Default to 100 if not found
-}
-
 // Initialize player money
 let playerMoney = getPlayerMoney();
-document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
 
 const suits = ["C", "D", "H", "S"];
 const values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"];
@@ -30,6 +18,15 @@ function startBlackjack() {
 
   // Retrieve the current money
   playerMoney = getPlayerMoney();
+  console.log(playerMoney);
+  document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
+  setPlayerMoney(playerMoney);
+
+  // Check if player has enough money to place the minimum bet ($5)
+  if (playerMoney < 5) {
+    alert("You do not have enough money to place the minimum bet of $5. Play our Match Game to earn more money!");
+    return; // Exit the function early, preventing the game from starting
+  }
 
   do {
     betAmount = prompt(`Place your bet please\n $5 Min\n You have $${playerMoney}.`);
@@ -44,9 +41,10 @@ function startBlackjack() {
   } while (betAmount === null || isNaN(betAmount) || betAmount < 5 || betAmount > 100 || betAmount > playerMoney);
 
   // Deduct the bet from the player's money
-  setPlayerMoney(playerMoney - parseInt(betAmount, 10));
   currentBet = parseInt(betAmount, 10);
-
+  playerMoney -= currentBet;
+  setPlayerMoney(playerMoney);
+  localStorage.setItem('playerMoney', playerMoney); // Save updated money
 
   // Proceed with game
   deck = createDeck(); 
@@ -217,7 +215,7 @@ function determineWinner() {
   const dealerScore = calculateScore(dealerHand);
   const resultElement = document.getElementById('game-result');
   const dealerScoreElement = document.getElementById('dealer-score'); // Get dealer score element
-  //console.log(`Player Score: ${playerScore}, Dealer Score: ${dealerScore}`);
+  console.log(`Player Score: ${playerScore}, Dealer Score: ${dealerScore}`);
   
   // Set the dealer score in the DOM
   dealerScoreElement.textContent = `Score: ${dealerScore}`;
@@ -225,32 +223,29 @@ function determineWinner() {
   if (playerScore > 21) {
     resultElement.textContent = "You busted! Dealer wins!";
     resultElement.style.color = "yellow"; // Player loses
-    //console.log(`Player Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
+    console.log(`Player Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (dealerScore > 21) {
       resultElement.textContent = "Dealer busted! You win!";
       resultElement.style.color = "yellow";
       playerMoney += currentBet * 2; // Player wins
-      //console.log(`Dealer Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
+      console.log(`Dealer Busts - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (playerScore > dealerScore) {
       resultElement.textContent = "You win!";
       resultElement.style.color = "yellow";
       playerMoney += currentBet * 2; // Player wins
-      //console.log(`Player Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
+      console.log(`Player Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else if (playerScore < dealerScore) {
       resultElement.textContent = "Dealer wins!";
       resultElement.style.color = "yellow"; // Player loses
-      //console.log(`Dealer Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
+      console.log(`Dealer Wins - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   } else {
       resultElement.textContent = "It's a tie!";
       resultElement.style.color = "yellow";
       playerMoney += currentBet * 1; // Tie, return the player's bet
-      //console.log(`It's a Tie - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
+      console.log(`It's a Tie - currentBet: ${currentBet}, playerMoney: ${playerMoney}`);
   }
-  // Update localStorage with the new player money
+  setPlayerMoney(playerMoney);
   localStorage.setItem('playerMoney', playerMoney);
-
-  // Display updated player money
-  document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
 
   gameOver = true;
   disableActions();
@@ -285,6 +280,7 @@ function resetGame() {
   // Check if the player has enough money to place the minimum bet
   if (playerMoney < 5) {
     alert("You do not have enough money to place the minimum bet of $5. Play our Match Game to earn more money!");
+    disableActions();
   } else {
     startBlackjack(); // Start a new game if they have enough money
   }

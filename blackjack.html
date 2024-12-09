@@ -15,7 +15,7 @@
     <div id="game-result" class="result"></div>
     <div id="hands-container">
       <div id="player-hand">
-        <div id="player-money"></div>
+        <div id="player-money">Money :</div>
         <h2>Your Hand (Score: <span id="player-score">0</span>)</h2>
         <div id="player-cards"></div>
 
@@ -30,7 +30,7 @@
       </div>
     </div>
   <div id="status"></div>
-  <script src="playerMoney.js"></script>
+  <script type="module" src="scripts/playerMoney.js"></script>
   <script type="module">
     import { startBlackjack, hit, stand, resetGame } from './scripts/blackjack.js';
 
