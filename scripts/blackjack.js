@@ -21,6 +21,7 @@ function startBlackjack() {
   console.log(playerMoney);
   document.getElementById('player-money').textContent = `Money: $${playerMoney}`;
   setPlayerMoney(playerMoney);
+  
 
   // Check if player has enough money to place the minimum bet ($5)
   if (playerMoney < 5) {

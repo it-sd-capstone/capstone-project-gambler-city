@@ -20,9 +20,9 @@ let betAmount = 0;
 let totalBetAmount = 0;
 
 // Retrieve player money from localStorage or initialize to 100
-let playerMoney = parseInt(localStorage.getItem('playerMoney'), 10) || 100;
+let playerMoney = getPlayerMoney();
 localStorage.setItem('playerMoney', playerMoney); // Ensure it's set in case the value was null
-
+setPlayerMoney(playerMoney);
 let playerMoneyElement = document.getElementById('player-money');
 playerMoneyElement.textContent = `Money: $${playerMoney}`;
 
