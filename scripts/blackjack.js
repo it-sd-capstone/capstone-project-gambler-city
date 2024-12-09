@@ -45,6 +45,7 @@ function startBlackjack() {
   playerMoney -= currentBet;
   setPlayerMoney(playerMoney);
   localStorage.setItem('playerMoney', playerMoney); // Save updated money
+  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; 
 
   // Proceed with game
   deck = createDeck(); 
@@ -246,6 +247,7 @@ function determineWinner() {
   }
   setPlayerMoney(playerMoney);
   localStorage.setItem('playerMoney', playerMoney);
+  document.getElementById('player-money').textContent = `Money: $${playerMoney}`; 
 
   gameOver = true;
   disableActions();
